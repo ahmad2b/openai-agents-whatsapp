@@ -1,8 +1,8 @@
 # OpenAI Agents - WhatsApp
 
-Give your OpenAI agent a WhatsApp number. Powered by WAHA.
+Give your agent its WhatsApp. Powered by the OpenAI Agents SDK and WAHA.
 
-Link an existing WhatsApp account to your OpenAI Agents SDK agent. People can message that number, ask follow-up questions, and get answers in the same conversation. You bring the account and number; this project connects them to your agent.
+Your OpenAI Agents SDK agent gets its own WhatsApp: you link an existing account to it, and people can message it, ask follow-up questions, and get answers in the same conversation. You bring the account and number; this project connects them to your agent.
 
 This minimal TypeScript project keeps the agent and WhatsApp integration in separate folders so you can change one without rewriting the other.
 
@@ -21,36 +21,56 @@ git clone https://github.com/ahmad2b/openai-agents-whatsapp.git
 cd openai-agents-whatsapp
 npm ci
 npm run setup
+npm run web:install
 ```
 
 Setup creates an ignored `.env` with random API/webhook secrets. It never overwrites an existing file. Leave `AGENT_MODE=echo` for the first run.
 
-## 2. Link a WhatsApp number to your agent
+## 2. Give your agent its WhatsApp
+
+Start the backend and WAHA in Docker, then run the Next.js frontend on your computer:
 
 ```sh
 docker compose up --build -d
-npm run whatsapp -- start
-npm run whatsapp -- status
+npm run dev
 ```
 
-When status is `SCAN_QR_CODE`:
+Open [http://localhost:3002/setup](http://localhost:3002/setup). (The root URL is the public project landing page.) The setup page checks the backend, starts the WhatsApp session, generates a private QR, and shows connection status.
+
+Select **Start linking**, wait for **Scan QR**, then select **Show QR code**. On the account's phone, open **WhatsApp → Linked devices → Link a device** and scan it. If it expires, select **Refresh QR**. Wait for **Connected**.
+
+The QR grants access to the account. Keep it private; it is not a public “chat with me” QR. The page clears it when the connection state changes. Linked-device state stays in this project's Docker `sessions` volume.
+
+Ports stay separate: WAHA uses `3000`, Hono uses `3001`, and Next.js uses `3002`. All published/listening interfaces are bound to loopback for local use. The UI builds on preset `b4r0BVlDHO`: shadcn Base UI Luma, olive/yellow colors, Playfair Display headings, Manrope interface text, Remix icons and pointer buttons.
+
+<details>
+<summary>Prefer the terminal? Pair without the frontend.</summary>
+
+Skip `npm run web:install` and `npm run dev`. After starting Docker, run:
 
 ```sh
+npm run whatsapp -- start
+npm run whatsapp -- status
+# Wait for SCAN_QR_CODE, then:
 npm run whatsapp -- qr
 ```
 
-Open `.local/qr.png` on your computer. On the account's phone, open **WhatsApp → Linked devices → Link a device** and scan it. If the QR expires, run the QR command again. Check status until it says `WORKING`.
+Open `.local/qr.png` privately and scan it using Linked devices. Delete the PNG after pairing. Check status until it says `WORKING`.
 
-The QR grants access to the account. Keep it private; it is not a public “chat with me” QR. Delete the PNG after pairing. Linked credentials stay in this project's Docker `sessions` volume.
+</details>
 
 ## 3. Test the connection
 
-From a **different WhatsApp account**, send a new private text message to the linked number:
+In the page’s **Test a reply** step, expand **Want to test just the agent here?** and run an echo test to check the frontend → Hono → configured reply function. This single-turn browser test sends no WhatsApp message and keeps no chat history.
+
+Then, from a **different WhatsApp account**, send a new private text message to the linked number:
 
 ```text
 You: Hello
 Bot: Echo: Hello
 ```
+
+Check the reply on the sender’s phone. The page shows counts of accepted messages, reply requests accepted by WAHA, and failed/uncertain attempts. These counts do not prove delivery to the phone.
 
 Self messages, groups, status updates, media and messages timestamped before app startup are ignored. The gateway may still receive account history; filtering here does not prevent that receipt.
 
@@ -93,6 +113,9 @@ whatsapp/
 scripts/
   setup.mjs         Generate local secrets
   whatsapp.mjs      Start the session, check status, save a private QR
+local/
+  setup.ts          Authenticated status, QR, session and agent-test endpoints
+web/                Next.js page, shadcn components and server-side API proxy
 index.ts            Wire the agent and WhatsApp webhook together
 compose.yaml        Run the app and gateway on a private Compose network
 ```
@@ -127,6 +150,8 @@ The function receives conversation messages, not WhatsApp account IDs or gateway
 
 The SDK manages agent execution. The adapter manages WhatsApp routing, per-chat context and delivery. Sender IDs stay outside the agent input.
 
+The browser calls Next.js `/api/setup/*` routes, which forward a fixed set of requests to authenticated Hono `/local/*` endpoints. The root `.env` is loaded server-side by `npm run dev`. No credentials use `NEXT_PUBLIC_` variables or enter browser responses. No CORS setup, Docker socket, remote shell, or database is needed. The page cannot install Docker, rewrite keys, or restart containers; configure `.env` and start/recreate containers in the terminal.
+
 **No separate database runs in this starter.**
 
 | State | Stored in | Survives app restart? |
@@ -159,6 +184,8 @@ Both published ports bind to localhost. Keep them private. For production, add d
 
 ## Stop or reset
 
+Stop `npm run dev` with Ctrl+C. To stop the backend and gateway:
+
 ```sh
 docker compose down
 ```
@@ -167,7 +194,7 @@ This preserves the linked session. To unlink, remove the device from WhatsApp's 
 
 ## Verification status
 
-TypeScript checks and synthetic local webhook/Agents SDK checks passed. Real WhatsApp pairing and a live model round trip remain unverified. Follow the echo-mode walkthrough first.
+Backend/frontend TypeScript, frontend lint and production build, and synthetic local webhook/Agents SDK checks passed. Browser checks cover desktop/mobile layout, session/QR flow against a synthetic gateway, echo testing through Next.js and Hono, activity counts, and offline/error states. The actual Hono Docker image built and both Hono/WAHA containers started. The local Next.js page passed an echo test against the real Docker backend, WAHA reached `SCAN_QR_CODE`, and the authenticated proxy returned a non-cached QR PNG without displaying or saving its contents during verification. Account pairing, phone-to-phone replies, and a live model round trip remain unverified. No paid model calls were used for these checks.
 
 ## License
 

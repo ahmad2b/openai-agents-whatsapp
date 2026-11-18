@@ -1,6 +1,6 @@
 {
   "name": "openai-agents-whatsapp",
-  "description": "Give your OpenAI agent a WhatsApp number. Powered by WAHA.",
+  "description": "Give your agent its WhatsApp. Powered by the OpenAI Agents SDK and WAHA.",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -11,7 +11,11 @@
     "setup": "node scripts/setup.mjs",
     "start": "tsx --env-file=.env index.ts",
     "check": "tsc --noEmit",
-    "whatsapp": "node --env-file=.env scripts/whatsapp.mjs"
+    "whatsapp": "node --env-file=.env scripts/whatsapp.mjs",
+    "dev": "node scripts/dev.mjs",
+    "web:install": "npm --prefix web ci",
+    "web:build": "npm --prefix web run build",
+    "web:check": "npm --prefix web run typecheck && npm --prefix web run lint"
   },
   "dependencies": {
     "@hono/node-server": "2.1.9",
