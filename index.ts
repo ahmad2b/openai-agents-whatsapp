@@ -1,11 +1,12 @@
 import { timingSafeEqual } from 'node:crypto';
 import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
+import { Hono, type MiddlewareHandler } from 'hono';
 import { bodyLimit } from 'hono/body-limit';
 import { createAgentReply } from './agent/agent.js';
 import type { Reply } from './agent/types.js';
 import { createWhatsAppClient } from './whatsapp/client.js';
 import { createMessageHandler } from './whatsapp/messages.js';
+import { createSetupRouter } from './local/setup.js';
 
 function required(name: string): string {
   const value = process.env[name]?.trim();
@@ -30,14 +31,17 @@ const handler = createMessageHandler({
 });
 const app = new Hono();
 app.get('/health', c => c.json({ status: 'ok', mode }));
-app.use('/webhook', async (c, next) => {
+const authenticate: MiddlewareHandler = async (c, next) => {
   const received = Buffer.from(c.req.header('X-Webhook-Token') ?? '');
   const expected = Buffer.from(token);
   if (received.length !== expected.length || !timingSafeEqual(received, expected)) {
     return c.json({ error: 'Unauthorized' }, 401);
   }
   await next();
-});
+};
+app.use('/webhook', authenticate);
+app.use('/local/*', authenticate);
+app.route('/local', createSetupRouter({ gateway: client, handler, reply, mode, model: mode === 'openai' ? required('OPENAI_MODEL') : null }));
 app.use('/webhook', bodyLimit({
   maxSize: 64 * 1024,
   onError: c => c.json({ error: 'Webhook too large' }, 413),

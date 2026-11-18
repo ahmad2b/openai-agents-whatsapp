@@ -7,5 +7,5 @@
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": ["index.ts", "agent/**/*.ts", "whatsapp/**/*.ts"]
+  "include": ["index.ts", "agent/**/*.ts", "whatsapp/**/*.ts", "local/**/*.ts"]
 }
