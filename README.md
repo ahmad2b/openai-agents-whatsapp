@@ -14,9 +14,11 @@ WhatsApp → WAHA → authenticated webhook → agent → reply to the original 
 
 You need Node.js 22+, Docker with Compose, and a WhatsApp account to link. The pinned WAHA image targets Linux AMD64 (including compatible Docker Desktop setups). Use a dedicated demo account. An OpenAI API key is only needed for AI agent replies.
 
-From your local copy of `openai-agents-whatsapp`, run:
+Clone the project and create your local configuration:
 
 ```sh
+git clone https://github.com/ahmad2b/openai-agents-whatsapp.git
+cd openai-agents-whatsapp
 npm ci
 npm run setup
 ```
@@ -163,9 +165,13 @@ docker compose down
 
 This preserves the linked session. To unlink, remove the device from WhatsApp's **Linked devices** screen. Only if you intend to erase local session credentials, run `docker compose down --volumes`; you must pair again afterward.
 
-## Before publishing
+## Verification status
 
-Choose an open-source license. Review the source and ignore rules; do not publish `.env`, QR images, session volumes, logs, real messages or account identifiers. This project has no license grant yet.
+TypeScript checks and synthetic local webhook/Agents SDK checks passed. Real WhatsApp pairing and a live model round trip remain unverified. Follow the echo-mode walkthrough first.
+
+## License
+
+[MIT](LICENSE). Keep `.env`, QR images, session volumes, logs and real messages private.
 
 ## References
 
