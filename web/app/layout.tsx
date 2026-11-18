@@ -25,6 +25,19 @@ export const metadata: Metadata = {
   title: "OpenAI Agents · WhatsApp — give your agent its WhatsApp",
   description:
     "Give your OpenAI Agents SDK agent its WhatsApp. People text it, it answers and remembers. Open-source TypeScript starter: clone it, scan one QR, done.",
+  openGraph: {
+    type: "website",
+    title: "Give your agent its WhatsApp",
+    description:
+      "Open-source starter that gives your OpenAI Agents SDK agent its own WhatsApp. People text it, it answers and remembers. Clone it, scan one QR.",
+    siteName: "OpenAI Agents × WhatsApp",
+  },
+  twitter: {
+    card: "summary",
+    title: "Give your agent its WhatsApp",
+    description:
+      "Open-source starter: your OpenAI Agents SDK agent gets its own WhatsApp. Clone it, scan one QR.",
+  },
 }
 
 export default function RootLayout({

@@ -1,0 +1,81 @@
+/* /setup in the landing design. The setup flow's own layout lives in globals.css;
+   these rules restyle it for the paper + espresso system. */
+
+/* ── Hero ────────────────────────────────────────── */
+.st-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: end;
+  padding-block: clamp(4rem, 9vw, 7rem) clamp(2.5rem, 5vw, 4rem);
+}
+.st-hero h1 { margin-top: 1rem; font-size: clamp(3rem, 7.5vw, 6.5rem); line-height: .95; letter-spacing: -.045em; }
+.st-hero h1 em { color: var(--ink); position: relative; z-index: 0; }
+.st-hero h1 em::after {
+  content: ""; position: absolute; z-index: -1; left: -.04em; right: -.06em; bottom: .08em; height: .3em;
+  background: var(--hi); border-radius: .08em; transform: skewX(-8deg);
+}
+.st-hero .lp-lede { margin-top: 1.5rem; background: none; max-width: 36rem; }
+
+.st-before { padding: 1.5rem; border-radius: 22px; background: var(--paper-2); }
+.st-before h2 { font-size: 1.5rem; letter-spacing: -.01em; }
+.st-before ul { margin-top: 1rem; display: flex; flex-direction: column; }
+.st-before li { padding-block: .85rem; border-top: 1px solid var(--line); font-size: .9rem; line-height: 1.55; color: var(--ink-soft); }
+.st-before li:last-child { padding-bottom: 0; }
+.st-before strong { color: var(--ink); font-weight: 600; }
+.st-before .copy-line { margin-top: .6rem; }
+
+/* ── Setup workspace ─────────────────────────────── */
+.setup-page .setup-section { background: transparent; padding-bottom: clamp(3rem, 7vw, 5.5rem); }
+.setup-page .setup-workspace {
+  width: var(--wrap);
+  padding: clamp(2rem, 4vw, 3.5rem);
+  border-radius: clamp(1.5rem, 3vw, 2.25rem);
+  background: oklch(0.985 0.004 95);
+  border: 1px solid var(--line);
+  box-shadow: 0 1px 0 var(--line), 0 30px 60px -40px oklch(0.25 0.03 55 / 35%);
+}
+.setup-page .setup-heading { margin-bottom: 2rem; }
+.setup-page .setup-heading h2 { font-weight: 400; font-size: clamp(2.3rem, 4.6vw, 3.75rem); line-height: 1; letter-spacing: -.035em; }
+.setup-page .setup-heading h2 em { color: var(--ink-soft); }
+.setup-page .setup-heading > p { color: var(--ink-soft); }
+
+/* Steps read like the walkthrough on the home page. */
+.setup-page .setup-steps[data-slot="tabs-list"] { border-color: var(--line); }
+.setup-page .setup-steps [data-slot="tabs-trigger"] { font-family: var(--font-heading), serif; font-size: 1.2rem; color: var(--ink-soft); }
+.setup-page .setup-steps [data-slot="tabs-trigger"][data-active] { color: var(--ink); }
+.setup-page .setup-steps [data-slot="tabs-trigger"]::after { background: var(--hi); }
+.setup-page .step-number { background: transparent; border: 1px solid var(--line); color: var(--ink-soft); font-family: var(--font-mono), monospace; }
+.setup-page [data-active] > .step-number { background: var(--hi); border-color: var(--hi); color: var(--ink); box-shadow: 0 0 0 5px color-mix(in oklch, var(--hi) 25%, transparent); }
+
+.setup-page .setup-panel-title { font-size: clamp(1.8rem, 3vw, 2.5rem); line-height: 1.1; letter-spacing: -.025em; }
+.setup-page .setup-instruction p, .setup-page .test-layout p { color: var(--ink-soft); }
+
+/* Buttons match the landing pills. */
+.setup-page .setup-panel [data-slot="button"] { border-radius: 999px; min-height: 2.9rem; padding-inline: 1.25rem; font-weight: 600; }
+
+/* QR stays on pure white so phones scan it reliably. */
+.setup-page .pairing-code { background: white; border: 1px solid var(--line); border-radius: 22px; }
+.setup-page .pairing-code [data-slot="empty-media"] { background: var(--hi); color: var(--ink); }
+.setup-page .pairing-code [data-slot="empty-title"] { font-family: var(--font-heading), serif; }
+
+.setup-page .activity-summary { background: var(--paper-2); border-radius: 22px; }
+.setup-page .activity-summary h4 { font-family: var(--font-mono), monospace; font-size: .72rem; font-weight: 400; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-soft); }
+.setup-page .activity-summary dd { font-size: 1.35rem; color: var(--ink); }
+
+.setup-page .browser-test-disclosure[data-slot="accordion"] { border: 0; border-radius: 0; border-top: 1px solid var(--line); }
+.setup-page .browser-test-disclosure [data-slot="accordion-trigger"] { font-family: var(--font-heading), serif; font-size: 1.2rem; padding-inline: 0; min-height: 4rem; }
+
+.st-links { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; }
+
+/* ── Compact footer for /setup ───────────────────── */
+.lp-footer-cta-compact { padding-block: clamp(3.5rem, 7vw, 5.5rem); }
+.lp-footer-cta-compact h2 { font-size: clamp(2.6rem, 6vw, 5rem); }
+
+@media (max-width: 860px) {
+  .st-hero { grid-template-columns: minmax(0, 1fr); align-items: start; }
+}
+@media (max-width: 640px) {
+  .setup-page .setup-workspace { padding: 1.25rem; }
+  .setup-page .setup-steps [data-slot="tabs-trigger"] { font-size: .85rem; }
+}

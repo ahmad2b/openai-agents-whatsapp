@@ -37,7 +37,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { CommandBlock } from "@/components/command-block"
+import { CopyLine } from "@/components/landing/copy-line"
 
 type Status = {
   mode: "echo" | "openai"
@@ -231,12 +231,12 @@ export function SetupFlow() {
     >
       <div className="setup-heading">
         <h2 id="setup-title" className="font-heading">
-          Let’s get you
+          Link. Test.
           <br />
-          <em>connected.</em>
+          <em>Switch on.</em>
         </h2>
         <p>
-          Start with an echo.
+          Start with echo replies.
           <br />
           Bring your agent when you’re ready.
         </p>
@@ -257,7 +257,7 @@ export function SetupFlow() {
             <span className="step-number">
               {linked ? <RiCheckLine aria-label="Account linked" /> : "01"}
             </span>
-            Link account
+            Link its WhatsApp
           </TabsTrigger>
           <TabsTrigger value="test">
             <span className="step-number">
@@ -270,7 +270,7 @@ export function SetupFlow() {
             Test a reply
           </TabsTrigger>
           <TabsTrigger value="agent">
-            <span className="step-number">03</span>Use your agent
+            <span className="step-number">03</span>Switch on your agent
           </TabsTrigger>
         </TabsList>
         <div className="setup-toolbar">
@@ -316,16 +316,20 @@ export function SetupFlow() {
             <AlertTitle>Start the backend to continue</AlertTitle>
             <AlertDescription>
               <p>{connectionError}</p>
-              <CommandBlock code="docker compose up --build -d" />
+              <CopyLine
+                code="docker compose up --build -d"
+                label="Copy backend start command"
+              />
             </AlertDescription>
           </Alert>
         ) : null}
         {status?.session === "UNAVAILABLE" ? (
           <Alert>
             <RiInformationLine />
-            <AlertTitle>Hono is running; WAHA is not reachable</AlertTitle>
+            <AlertTitle>The backend is up, but WAHA isn’t answering</AlertTitle>
             <AlertDescription>
-              Check the WAHA container, then refresh the connection status.
+              Check that the WAHA container is running (docker compose ps), then
+              refresh the status.
             </AlertDescription>
           </Alert>
         ) : null}
@@ -341,13 +345,13 @@ export function SetupFlow() {
             <div className="setup-instruction">
               <h3 className="setup-panel-title font-heading">
                 {linked
-                  ? "Your account is connected."
-                  : "Link the account your agent will use."}
+                  ? "Your agent has its WhatsApp."
+                  : "Link the WhatsApp your agent will use."}
               </h3>
               <p className="max-w-prose leading-7 text-muted-foreground">
                 {linked
-                  ? "Your account is ready. Use another WhatsApp account to check that a message gets a reply."
-                  : "Open WhatsApp on your phone. Choose Linked devices → Link a device, then scan the code here."}
+                  ? "Now check it end to end: text it from a different WhatsApp account and watch for the reply."
+                  : "On the agent’s phone, open WhatsApp → Linked devices → Link a device, then scan the code that appears here."}
               </p>
               <div className="flex flex-wrap gap-3">
                 {linked ? (
@@ -380,7 +384,8 @@ export function SetupFlow() {
                 )}
               </div>
               <p className="text-sm leading-6 text-muted-foreground">
-                Use a dedicated demo account. Keep the pairing code private.
+                Use a dedicated account. Treat the QR like a password: anyone
+                who scans it controls the account.
               </p>
             </div>
             <div className="pairing-code">
@@ -405,7 +410,7 @@ export function SetupFlow() {
                     <EmptyDescription>
                       {linked
                         ? "You’re ready to test a reply."
-                        : "Show your code to link this account."}
+                        : "Your private QR will appear here."}
                     </EmptyDescription>
                   </EmptyHeader>
                 </Empty>
@@ -424,17 +429,17 @@ export function SetupFlow() {
                 The best test? A real message.
               </h3>
               <p className="leading-7 text-muted-foreground">
-                Message the number you just linked. Your own messages are
-                ignored, so use a second account or ask a friend. Check for the
-                reply on that phone.
+                From a different WhatsApp account, text your agent’s number. Its
+                own messages are ignored, so use a second phone or ask a friend.
+                The reply shows up on that phone.
               </p>
               {!linked ? (
                 <Alert>
                   <RiInformationLine />
                   <AlertTitle>Link WhatsApp first</AlertTitle>
                   <AlertDescription>
-                    Go back to Link to connect your account before sending a
-                    message.
+                    Go back to step 1 and link your agent’s WhatsApp before
+                    sending a message.
                   </AlertDescription>
                 </Alert>
               ) : null}
@@ -443,7 +448,7 @@ export function SetupFlow() {
                   <RiCheckLine />
                   <AlertTitle>You’ve tested a WhatsApp reply.</AlertTitle>
                   <AlertDescription>
-                    Ready to replace the echo with your own agent?
+                    Ready to swap the echo for your own agent?
                   </AlertDescription>
                 </Alert>
               ) : null}
@@ -458,7 +463,7 @@ export function SetupFlow() {
               </Button>
             </div>
             <div className="activity-summary">
-              <h4>On this backend session</h4>
+              <h4>Since the backend started</h4>
               <dl className="flex flex-col gap-4 text-sm">
                 <div className="flex justify-between gap-4">
                   <dt>Messages accepted</dt>
@@ -482,8 +487,8 @@ export function SetupFlow() {
                 </div>
               </dl>
               <p className="text-sm leading-6 text-muted-foreground">
-                Counts reset on backend restart. WAHA accepting a reply request
-                does not confirm phone delivery.
+                Counts reset when the backend restarts. “Accepted by WAHA” means
+                the reply was handed off, not that the phone received it.
               </p>
               {status?.activity.processing ? (
                 <p className="flex items-center gap-2 text-sm" role="status">
@@ -500,8 +505,8 @@ export function SetupFlow() {
                 <AccordionContent>
                   <div className="flex min-w-0 flex-col gap-5">
                     <p className="leading-7 text-muted-foreground">
-                      Try the agent without WhatsApp. This makes a single-turn
-                      request and does not save a conversation.
+                      Send one message straight to the configured agent, without
+                      WhatsApp. Nothing is saved to a conversation.
                     </p>
                     <form
                       onSubmit={test}
@@ -571,14 +576,14 @@ export function SetupFlow() {
               </h3>
               <p className="leading-7 text-muted-foreground">
                 Set your key and model in the root .env file, then recreate the
-                backend container. Keep credentials in that file; this page
-                never receives them.
+                backend container. Your key stays in that file; this page never
+                sees it.
               </p>
               <p className="text-sm leading-6 text-muted-foreground">
-                Edit agent/agent.ts to bring your own agent. The official SDK
-                runner stays in place. OpenAI calls are paid; use
-                ALLOWED_CHAT_IDS in .env if you want to limit who can message
-                it.
+                To bring your own agent, edit agent/agent.ts; the official SDK
+                runner stays in place. OpenAI calls cost money, so set
+                ALLOWED_CHAT_IDS in .env if you want to limit who can trigger
+                them.
               </p>
               <Button
                 variant="outline"
@@ -592,12 +597,17 @@ export function SetupFlow() {
               </Button>
             </div>
             <div className="flex min-w-0 flex-col gap-4">
-              <CommandBlock
+              <CopyLine
+                prompt={false}
+                label="Copy .env settings"
                 code={
-                  "# Edit .env\nAGENT_MODE=openai\nOPENAI_API_KEY=your-private-key\nOPENAI_MODEL=your-model-id"
+                  "# .env\nAGENT_MODE=openai\nOPENAI_API_KEY=your-private-key\nOPENAI_MODEL=your-model-id"
                 }
               />
-              <CommandBlock code="docker compose up -d --force-recreate app" />
+              <CopyLine
+                code="docker compose up -d --force-recreate app"
+                label="Copy recreate command"
+              />
             </div>
           </div>
         </TabsContent>

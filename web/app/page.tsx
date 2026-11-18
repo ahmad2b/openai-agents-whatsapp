@@ -1,9 +1,7 @@
-import Link from "next/link"
 import {
   RiArrowRightUpLine,
   RiArrowDownLine,
   RiGithubLine,
-  RiWhatsappLine,
 } from "@remixicon/react"
 import {
   Accordion,
@@ -15,6 +13,7 @@ import { AsciiBurst } from "@/components/landing/ascii-burst"
 import { CopyLine } from "@/components/landing/copy-line"
 import { MessageJourney } from "@/components/landing/message-journey"
 import { UseCaseExplorer } from "@/components/landing/use-case-explorer"
+import { SiteFooter, SiteHeader } from "@/components/landing/site-chrome"
 import { site } from "@/lib/site"
 import "./landing.css"
 
@@ -97,17 +96,6 @@ const faqs = [
   },
 ]
 
-const marquee = [
-  "Clone",
-  "Scan",
-  "Text",
-  "Reply",
-  "Remember",
-  "Swap in your agent",
-  "MIT licensed",
-  "Self-hosted",
-]
-
 export default function Landing() {
   return (
     <div className="landing">
@@ -115,35 +103,7 @@ export default function Landing() {
         Skip to how it works
       </a>
 
-      <header className="lp-bar">
-        <Link
-          href="/"
-          className="lp-brand"
-          aria-label="OpenAI Agents WhatsApp home"
-        >
-          <RiWhatsappLine aria-hidden="true" />
-          <span>
-            Agents <i>×</i> WhatsApp
-          </span>
-        </Link>
-        <span className="lp-status">
-          <span className="lp-dot" aria-hidden="true" /> Open source · MIT
-        </span>
-        <nav aria-label="Sections" className="lp-nav">
-          <a href="#how">How it works</a>
-          <a href="#use-cases">Use cases</a>
-          <a href="#start">Get started</a>
-          <a href="#faq">FAQ</a>
-        </nav>
-        <a
-          className="lp-pill"
-          href={site.repository}
-          target="_blank"
-          rel="noreferrer"
-        >
-          <RiGithubLine aria-hidden="true" /> GitHub
-        </a>
-      </header>
+      <SiteHeader page="home" />
 
       <main>
         {/* 1 — Promise */}
@@ -413,69 +373,7 @@ export default function Landing() {
         </section>
       </main>
 
-      <footer className="lp-footer">
-        <div className="lp-marquee" aria-hidden="true">
-          <div>
-            {[...marquee, ...marquee].map((w, i) => (
-              <span key={i}>
-                {w}
-                <i>*</i>
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="lp-wrap lp-footer-cta">
-          <h2>
-            Give it <em>its WhatsApp.</em>
-          </h2>
-          <div className="lp-hero-actions">
-            <a className="lp-button lp-button-light" href="#start">
-              Get started
-            </a>
-            <a
-              className="lp-button lp-button-ghost"
-              href={site.booking}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Book a 15-min chat <RiArrowRightUpLine aria-hidden="true" />
-            </a>
-          </div>
-          <p className="lp-contact">
-            Hi, I’m{" "}
-            <a href={site.author.url} target="_blank" rel="noreferrer">
-              Ahmad
-            </a>
-            , and I built this starter. If you’re working on something similar,
-            got stuck on a step, or just want to bounce an idea around, write to
-            me at <a href={`mailto:${site.email}`}>{site.email}</a>. I read
-            every email and reply myself.
-          </p>
-        </div>
-        <div className="lp-wrap lp-footer-meta">
-          <span>
-            Built with the OpenAI Agents SDK and WAHA by{" "}
-            <a href={site.author.url} target="_blank" rel="noreferrer">
-              {site.author.name}
-            </a>
-            .
-          </span>
-          <span>
-            <a
-              href={`${site.repository}/blob/main/LICENSE`}
-              target="_blank"
-              rel="noreferrer"
-            >
-              MIT licensed
-            </a>{" "}
-            ·{" "}
-            <a href={site.repository} target="_blank" rel="noreferrer">
-              GitHub
-            </a>{" "}
-            · Not affiliated with OpenAI or WhatsApp.
-          </span>
-        </div>
-      </footer>
+      <SiteFooter page="home" />
     </div>
   )
 }

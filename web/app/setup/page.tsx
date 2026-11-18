@@ -1,95 +1,97 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import {
-  RiArrowDownLine,
-  RiArrowRightUpLine,
-  RiGithubLine,
-  RiWhatsappLine,
-} from "@remixicon/react"
-import { Button } from "@/components/ui/button"
+import { RiArrowRightUpLine } from "@remixicon/react"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { CommandBlock } from "@/components/command-block"
+import { CopyLine } from "@/components/landing/copy-line"
+import { SiteFooter, SiteHeader } from "@/components/landing/site-chrome"
 import { SetupFlow } from "@/components/setup-flow"
-import { ConversationExample } from "@/components/conversation-example"
-import { SectionDivider } from "@/components/section-divider"
-
-const repository = "https://github.com/ahmad2b/openai-agents-whatsapp"
+import { site } from "@/lib/site"
+import "../landing.css"
+import "./setup.css"
 
 export const metadata: Metadata = {
-  title: "Local setup · OpenAI Agents WhatsApp",
+  title: "Local setup · give your agent its WhatsApp",
+  description:
+    "Link the WhatsApp your agent will use, test a real reply, then switch on your OpenAI agent. Runs on your machine.",
   robots: { index: false, follow: false },
 }
 
-export default function Page() {
+const details = [
+  {
+    q: "What connects to what?",
+    a: "WhatsApp → WAHA → the Hono webhook → your agent → back to the same chat. Docker runs WAHA and the backend. This page runs on your machine with Next.js and talks to the backend through a few fixed, server-side routes.",
+  },
+  {
+    q: "Where do conversations live?",
+    a: "Each sender’s last five turns stay in backend memory and reset on restart. There is no database. WAHA keeps the linked-device session in a private Docker volume, so you don’t have to scan again after a restart.",
+  },
+  {
+    q: "What does this starter handle?",
+    a: "New private text messages from other accounts. Groups, media, status updates and the agent’s own messages are ignored. It’s built to test an idea, not to run production traffic yet.",
+  },
+  {
+    q: "Is the QR code safe to share?",
+    a: "No. Anyone who scans it controls that WhatsApp account. This page fetches it fresh, never caches it, and clears it as soon as the connection changes. Keep screenshots of it private.",
+  },
+  {
+    q: "How do I unlink or start over?",
+    a: "Remove the device from WhatsApp → Linked devices on the agent’s phone. To also erase the local session, run docker compose down --volumes, then link again here.",
+  },
+]
+
+export default function SetupPage() {
   return (
-    <>
+    <div className="landing setup-page">
       <a href="#setup" className="skip-link">
         Skip to setup
       </a>
-      <header className="opening dark">
-        <div className="page-width site-header">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-sm font-medium"
-            aria-label="OpenAI Agents WhatsApp home"
-          >
-            <RiWhatsappLine className="size-6" />
-            <span>
-              OpenAI Agents <span className="brand-connector">/</span> WhatsApp
-            </span>
-          </Link>
-          <Button
-            nativeButton={false}
-            variant="ghost"
-            size="sm"
-            render={<a href={repository} target="_blank" rel="noreferrer" />}
-          >
-            <RiGithubLine data-icon="inline-start" />
-            <span className="hidden sm:inline">View on </span>GitHub
-            <RiArrowRightUpLine data-icon="inline-end" />
-          </Button>
-        </div>
-      </header>
+      <SiteHeader page="setup" />
+
       <main>
-        <section aria-labelledby="intro-title" className="hero-surface dark">
-          <div className="page-width hero-content">
-            <div className="hero-copy">
-              <h1 id="intro-title" className="font-heading">
-                Give your
-                <br />
-                agent its
-                <br />
-                <em>WhatsApp.</em>
-              </h1>
-              <p className="hero-description">
-                Your agent, one message away.
-                <br />
-                In the chat people already use.
-              </p>
-              <Button
-                nativeButton={false}
-                size="lg"
-                render={<a href="#setup" />}
-              >
-                Connect my WhatsApp
-                <RiArrowDownLine data-icon="inline-end" />
-              </Button>
-              <p className="hero-note">Try it without an OpenAI key.</p>
-            </div>
-            <ConversationExample />
-            <div className="hero-colophon">
-              <span>
-                OpenAI Agents SDK <span aria-hidden="true">↔</span> WAHA
-              </span>
-              <span>TypeScript. Self-hosted. Yours to build on.</span>
-            </div>
+        <section className="lp-wrap st-hero" aria-labelledby="st-title">
+          <div>
+            <span className="lp-kicker">Local setup</span>
+            <h1 id="st-title">
+              Hand your agent
+              <br />
+              <em>its WhatsApp.</em>
+            </h1>
+            <p className="lp-lede">
+              Three steps, all on your machine: link the WhatsApp your agent
+              will use, test a real reply from another phone, then switch on
+              your agent. The QR code and your keys never leave this computer.
+            </p>
           </div>
-          <SectionDivider />
+          <aside className="st-before" aria-labelledby="before-title">
+            <h2 id="before-title">Before you start</h2>
+            <ul>
+              <li>
+                <strong>The backend is running.</strong> From the repository
+                root:
+                <CopyLine
+                  code="docker compose up --build -d"
+                  label="Copy backend start command"
+                />
+              </li>
+              <li>
+                <strong>A WhatsApp account for the agent.</strong> A spare
+                number works best, so your personal chats stay separate.
+              </li>
+              <li>
+                <strong>A second account to test from.</strong> The agent
+                ignores messages from its own number.
+              </li>
+              <li>
+                <strong>No OpenAI key yet.</strong> Echo mode proves the wiring
+                for free.
+              </li>
+            </ul>
+          </aside>
         </section>
 
         <section
@@ -100,116 +102,49 @@ export default function Page() {
         </section>
 
         <section
-          id="how-it-works"
-          className="details-surface dark"
-          aria-labelledby="architecture-title"
+          className="lp-wrap lp-section lp-rule lp-split"
+          aria-labelledby="details-title"
         >
-          <SectionDivider reverse />
-          <div className="page-width details-content grid gap-8 md:grid-cols-[1fr_1.3fr] md:gap-20">
-            <div>
-              <h2
-                id="architecture-title"
-                className="font-heading text-4xl leading-tight sm:text-5xl"
+          <div className="lp-head">
+            <span className="lp-kicker">Under the hood</span>
+            <h2 id="details-title">
+              Keep your agent.
+              <br />
+              <em>Add the conversation.</em>
+            </h2>
+            <p>
+              The official Agents SDK still runs your agent. This starter only
+              handles the WhatsApp side: incoming messages, each sender’s
+              memory, and replies to the right person.
+            </p>
+            <div className="st-links">
+              <Link className="lp-link" href="/#how">
+                Watch one message travel
+              </Link>
+              <a
+                className="lp-link"
+                href={`${site.repository}#make-it-your-agent`}
+                target="_blank"
+                rel="noreferrer"
               >
-                Keep your agent.
-                <br />
-                <em>Add the conversation.</em>
-              </h2>
-              <p className="mt-5 max-w-prose leading-7 text-muted-foreground">
-                Keep the official SDK’s Agent and run(). The adapter handles
-                incoming messages, separate chat context and replies to the
-                right person.
-              </p>
-              <Button
-                nativeButton={false}
-                variant="link"
-                className="mt-4 px-0"
-                render={
-                  <a
-                    href={`${repository}#make-it-your-agent`}
-                    target="_blank"
-                    rel="noreferrer"
-                  />
-                }
-              >
-                Make it yours
-                <RiArrowRightUpLine data-icon="inline-end" />
-              </Button>
+                Make it your agent <RiArrowRightUpLine aria-hidden="true" />
+              </a>
             </div>
-            <Accordion>
-              <AccordionItem value="local">
-                <AccordionTrigger>
-                  Need to start the project locally?
-                </AccordionTrigger>
-                <AccordionContent>
-                  <p className="mb-4 leading-7">
-                    Clone the repo and open its folder. You’ll need Node.js 22+
-                    and Docker Compose. Then run:
-                  </p>
-                  <CommandBlock
-                    code={
-                      "npm ci\nnpm run setup\nnpm run web:install\ndocker compose up --build -d\nnpm run dev"
-                    }
-                  />
-                  <p className="mt-4 leading-7">
-                    Open localhost:3002. Echo mode needs no OpenAI key.
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="flow">
-                <AccordionTrigger>What connects to what?</AccordionTrigger>
-                <AccordionContent>
-                  <p className="leading-7">
-                    WhatsApp → WAHA → Hono → your agent → the same chat. Docker
-                    runs WAHA and the agent backend. Next.js runs this local
-                    setup page. API credentials stay server-side.
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="storage">
-                <AccordionTrigger>
-                  Where are conversations stored?
-                </AccordionTrigger>
-                <AccordionContent>
-                  <p className="leading-7">
-                    Each sender has their own last five completed turns in
-                    backend memory. History, pending work and duplicate tracking
-                    reset on restart. There’s no application database. WAHA’s
-                    linked-device state stays in a private Docker volume.
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="limits">
-                <AccordionTrigger>
-                  What does this starter support?
-                </AccordionTrigger>
-                <AccordionContent>
-                  <p className="leading-7">
-                    Fresh private text messages from other accounts. Groups,
-                    media and your own messages are ignored. WAHA is an
-                    unofficial linked-account integration; use a dedicated demo
-                    account. This starter does not provide durable production
-                    messaging.
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
           </div>
+          <Accordion className="lp-faq">
+            {details.map((d) => (
+              <AccordionItem key={d.q} value={d.q}>
+                <AccordionTrigger>{d.q}</AccordionTrigger>
+                <AccordionContent>
+                  <p>{d.a}</p>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </section>
       </main>
-      <footer className="footer-surface dark">
-        <div className="page-width site-footer">
-          <p>Built with OpenAI Agents SDK & WAHA.</p>
-          <a
-            className="hover:underline"
-            href={`${repository}/blob/main/LICENSE`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Open source. MIT licensed.
-          </a>
-        </div>
-      </footer>
-    </>
+
+      <SiteFooter page="setup" />
+    </div>
   )
 }
