@@ -18,3 +18,7 @@ Open http://localhost:3002/setup. Start the Docker backend with `docker compose 
 - `app/globals.css`: preset b4r0BVlDHO tokens; Manrope/Playfair fonts are in `app/layout.tsx`.
 
 Browser tests run the configured agent without sending WhatsApp messages. A real WhatsApp test needs a second account. See the root README for the full walkthrough and limits.
+
+## Vercel deployment
+
+The public site builds from this `web/` directory. Vercel Web Analytics is enabled only in production; local development and previews do not mount the analytics component. Pairing and agent tests remain local at `http://localhost:3002/setup`. Keep backend tokens and OpenAI/WAHA keys out of the Vercel project.

@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import { Analytics } from "@vercel/analytics/next"
 import { Geist_Mono, Manrope, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
@@ -39,7 +40,10 @@ export default function RootLayout({
         ui.variable
       )}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        {process.env.VERCEL_ENV === "production" ? <Analytics /> : null}
+      </body>
     </html>
   )
 }
