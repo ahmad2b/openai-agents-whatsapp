@@ -384,8 +384,8 @@ export function SetupFlow() {
                 )}
               </div>
               <p className="text-sm leading-6 text-muted-foreground">
-                Use a dedicated account. Treat the QR like a password: anyone
-                who scans it controls the account.
+                Use a dedicated account and keep the QR private. Scan it only
+                with the WhatsApp account you want this gateway to access.
               </p>
             </div>
             <div className="pairing-code">
@@ -576,8 +576,8 @@ export function SetupFlow() {
               </h3>
               <p className="leading-7 text-muted-foreground">
                 Set your key and model in the root .env file, then recreate the
-                backend container. Your key stays in that file; this page never
-                sees it.
+                backend container. The backend reads your key from .env; this
+                page never sees it.
               </p>
               <p className="text-sm leading-6 text-muted-foreground">
                 To bring your own agent, edit agent/agent.ts; the official SDK

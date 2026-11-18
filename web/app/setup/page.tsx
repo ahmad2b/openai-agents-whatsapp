@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 const details = [
   {
     q: "What connects to what?",
-    a: "WhatsApp → WAHA → the Hono webhook → your agent → back to the same chat. Docker runs WAHA and the backend. This page runs on your machine with Next.js and talks to the backend through a few fixed, server-side routes.",
+    a: "WhatsApp → WAHA → the Hono webhook → your agent → back to the same chat. Docker runs WAHA and the backend. The local setup page runs on your machine with Next.js and talks to the backend through a few fixed, server-side routes.",
   },
   {
     q: "Where do conversations live?",
@@ -36,7 +36,7 @@ const details = [
   },
   {
     q: "Is the QR code safe to share?",
-    a: "No. Anyone who scans it controls that WhatsApp account. This page fetches it fresh, never caches it, and clears it as soon as the connection changes. Keep screenshots of it private.",
+    a: "Keep it private. Scanning authorizes this gateway as a linked device for the WhatsApp account on the scanning phone. Only scan with the account you want to connect. The local setup page clears the QR when the connection changes.",
   },
   {
     q: "How do I unlink or start over?",
@@ -45,6 +45,8 @@ const details = [
 ]
 
 export default function SetupPage() {
+  const hosted = Boolean(process.env.VERCEL_ENV)
+
   return (
     <div className="landing setup-page">
       <a href="#setup" className="skip-link">
@@ -62,9 +64,9 @@ export default function SetupPage() {
               <em>its WhatsApp.</em>
             </h1>
             <p className="lp-lede">
-              Three steps, all on your machine: link the WhatsApp your agent
-              will use, test a real reply from another phone, then switch on
-              your agent. The QR code and your keys never leave this computer.
+              Link the WhatsApp your agent will use, test a real reply from
+              another account, then switch on your agent. Run the setup on your
+              computer; API keys stay server-side.
             </p>
           </div>
           <aside className="st-before" aria-labelledby="before-title">
@@ -98,7 +100,33 @@ export default function SetupPage() {
           className="setup-section"
           aria-label="Link and test your WhatsApp account"
         >
-          <SetupFlow />
+          {hosted ? (
+            <div className="lp-wrap st-local-guide" id="setup">
+              <span className="lp-kicker">Run it locally</span>
+              <h2>
+                Pair on <em>your computer.</em>
+              </h2>
+              <p>
+                This website introduces the project. To link WhatsApp, run the
+                starter locally and open its setup page. No OpenAI key is needed
+                for your first echo reply.
+              </p>
+              <CopyLine
+                code={
+                  "git clone https://github.com/ahmad2b/openai-agents-whatsapp.git\ncd openai-agents-whatsapp\nnpm ci\nnpm run setup\nnpm run web:install\ndocker compose up --build -d\nnpm run dev"
+                }
+                label="Copy local setup commands"
+              />
+              <p className="st-requirements">
+                You’ll need Node.js 22+ and Docker Compose.
+              </p>
+              <a className="lp-button" href="http://localhost:3002/setup">
+                Open local setup <RiArrowRightUpLine aria-hidden="true" />
+              </a>
+            </div>
+          ) : (
+            <SetupFlow />
+          )}
         </section>
 
         <section

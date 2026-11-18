@@ -33,9 +33,7 @@ export function SiteHeader({ page }: { page: "home" | "setup" }) {
       </Link>
       <span className="lp-status">
         <span className="lp-dot" aria-hidden="true" />{" "}
-        {page === "setup"
-          ? "Local setup · runs on your machine"
-          : "Open source · MIT"}
+        {page === "setup" ? "Local setup guide" : "Open source · MIT"}
       </span>
       <nav aria-label="Site" className="lp-nav">
         <Link href="/#how">How it works</Link>

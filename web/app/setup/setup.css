@@ -79,3 +79,9 @@
   .setup-page .setup-workspace { padding: 1.25rem; }
   .setup-page .setup-steps [data-slot="tabs-trigger"] { font-size: .85rem; }
 }
+
+/* The public deployment explains local setup without mounting private controls. */
+.st-local-guide { padding-block: 2rem; max-width: 48rem; }
+.st-local-guide h2 { margin-top: 1rem; font-size: clamp(2.3rem, 5vw, 3.75rem); line-height: 1.1; letter-spacing: -.035em; }
+.st-local-guide > p { margin-block: 1.25rem; color: var(--ink-soft); line-height: 1.75; }
+.st-local-guide .st-requirements { font-size: .85rem; }
